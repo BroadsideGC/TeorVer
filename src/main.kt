@@ -4,7 +4,6 @@
 
 
 import java.security.SecureRandom
-import java.util.*
 
 
 val N1 = 10000
@@ -22,16 +21,11 @@ fun calculate1(n: Int) {
     val f = { x: Double -> Math.log(a * x + 1) }
     val rand = { from: Double, to: Double -> from + rnd.nextDouble() * (to - from) }
     //Монте-Карло
-    var inside = 0.0
-    for (i in 0..n - 1) {
-        var sum = 0.0
-        for (j in 0..k - 1) {
-            val x = rand(0.0, 1.0)
-            val y = f(x)
-            sum += y
-        }
-        if (sum <= c) inside++
-    }
+    val inside = (0..n - 1).count {
+        (0..k - 1).map {
+            f(rand(0.0, 1.0))
+        }.sum() <= c
+    }.toDouble()
     //Вычисления
     val volume = inside / n
     val dispersion = Math.sqrt(inside * (1 - volume) / (n - 1))
@@ -54,20 +48,11 @@ fun calculate2(n: Int) {
     val to = 4.0
     val rand = { from: Double, to: Double -> from + rnd.nextDouble() * (to - from) }
     //Монте-Карло
-    val points = ArrayList<Double>()
-    var sum = 0.0
-    for (i in 0..n - 1) {
-        val x = rand(from, to)
-        val y = f(x)
-        points.add(x)
-        sum += y
-    }
+    val points = List(n, { rand(from, to) })
+    val sum = points.map { f(it) }.sum()
     //Вычисления
     val volume = sum / n
-    var sumSquares = 0.0
-    for (x in points) {
-        sumSquares += Math.pow(volume - f(x), 2.0)
-    }
+    val sumSquares = points.sumByDouble { Math.pow(volume - f(it), 2.0) }
     val dispersion = Math.sqrt(sumSquares / (n - 1))
     val error = t * dispersion / Math.sqrt(n.toDouble())
     val fromInt = volume - error
@@ -83,24 +68,15 @@ fun calculate2(n: Int) {
 
 fun calculate3(n: Int) {
     val wolframVolume = 0.284347
-    val rand = { lambda: Double -> -1 / lambda * Math.log(1 - rnd.nextDouble()); }
     val lambda = 2.0
+    val rand = { -1 / lambda * Math.log(1 - rnd.nextDouble()); }
     val f = { x: Double -> Math.pow(x, (2.0 / 3)) }
     //Монте-Карло
-    val points = ArrayList<Double>()
-    var sum = 0.0
-    for (i in 0..n - 1) {
-        val x = rand(lambda)
-        val y = f(x)
-        points.add(x)
-        sum += y
-    }
+    val points = List(n, { rand() })
+    val sum = points.map { f(it) }.sum()
     //Вычисления
     val volume = sum / n / lambda
-    var sumSquares = 0.0
-    for (x in points) {
-        sumSquares += Math.pow(volume - f(x), 2.0)
-    }
+    val sumSquares = points.sumByDouble { Math.pow(volume - f(it), 2.0) }
     val dispersion = Math.sqrt(sumSquares / (n - 1))
     val error = t * dispersion / Math.sqrt(n.toDouble()) / lambda
     val from = volume - error
