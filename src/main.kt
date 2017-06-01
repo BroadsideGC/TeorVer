@@ -33,7 +33,7 @@ fun calculate1(n: Int) {
     val from = volume - error
     val to = volume + error
     //Вывод
-    println(" Объем выборки n: ${n}")
+    println(" Объем выборки n: $n")
     println(String.format(" Объем части тела: %.8f", volume))
     println(String.format(" Дисперсия: %.8f", dispersion))
     println(String.format(" Погрешность: %.8f", error))
@@ -92,19 +92,19 @@ fun calculate3(n: Int) {
 
 fun main(args: Array<String>) {
     println("Задание 1:")
-    println("${N1} итераций")
+    println("$N1 итераций")
     calculate1(N1)
-    println("${N2} итераций")
+    println("$N2 итераций")
     calculate1(N2)
     println("Задание 2:")
-    println("${N1} итераций")
+    println("$N1 итераций")
     calculate2(N1)
-    println("${N2} итераций")
+    println("$N2 итераций")
     calculate2(N2)
     println("Задание 3:")
-    println("${N1} итераций")
+    println("$N1 итераций")
     calculate3(N1)
-    println("${N2} итераций")
+    println("$N2 итераций")
     calculate3(N2)
 }
 
